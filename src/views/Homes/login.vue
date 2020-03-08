@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <div>{{message}}</div>
     <div>
       Email:
       <input v-model="email" />
@@ -10,40 +9,34 @@
       <input v-model="password" />
     </div>
     <div>
-      <button @click="doLogin" :disabled="isProcess">Login</button>
+      <button @click="doLogin">Login</button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "HomesLogin",
   data() {
     return {
       email: "",
-      password: "",
-      isProcess: false,
-      user: null,
-      message: ""
+      password: ""
     };
   },
-  methods: {
-    doLogin: async function() {
-      this.isProcess = true;
-      this.message = "ログイン中";
-      const isLoggedIn = await this.$session
-        .login(this.email, this.password)
-        .catch(() => {
-          console.error("ログインエラー");
-          this.isProcess = false;
-        });
-      if (isLoggedIn) {
-        this.$router.push('/')
-      } else {
-        this.message = "ログインに失敗しました。";
-      }
-      this.isProcess = false;
+  computed: {
+    isLogin() {
+      return this.$store.getters.isLoggedIn;
     }
+  },
+  methods: {
+    doLogin() {
+      this.$emit("login", { email: this.email, password: this.password });
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (!this.isLogin) {
+      return next(false);
+    }
+    next();
   }
 };
 </script>

@@ -1,83 +1,39 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Vuex from 'vuex'
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
-import axios from 'axios'
-
+import "@/assets/common.scss";
 import AppLayout from '@/views/AppLayout.vue'
 import HomesIndex from '@/views/Homes/index.vue'
 import HomesLogin from '@/views/Homes/login.vue'
 import HomesProfile from '@/views/Homes/profile.vue'
+import UsersIndex from '@/views/Users/index.vue'
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
-axios.interceptors.request.use(function (config) {
-  if (typeof config.params === 'undefined') {
-    config.params = {};
-  }
-  if (typeof config.params === 'object') {
-    if (typeof URLSearchParams === 'function' && config.params instanceof URLSearchParams)
-      config.params.append('_', Date.now());
-    else
-      config.params._ = Date.now();
-  }
+Vue.use(Vuex)
+Vue.use(BootstrapVue)
 
-  return config;
-});
-const VueSession = {
-  install: (Vue) => {
-    Object.defineProperty(Vue.prototype, '$session', {
-      get() { return VueSession }
-    })
+// データストア
+const vueStore = new Vuex.Store({
+  state: {
+    user: null
   },
-
-  isLoggedIn: function () {
-    return (this.user !== null);
-  },
-
-  user: null,
-  csrfToken: null,
-
-  login: async function (email, password) {
-    // セッションID、CSRFトークン取得
-    const response1 = await axios.get('http://localhost:8765/login', {
-      withCredentials: true
-
-    })
-
-    const cookie = document.cookie.split(';').reduce((accumulator, currentValue) => {
-      const [key, value] = currentValue.split('=');
-      accumulator[key] = value
-      return accumulator;
-    }, {});
-
-    const response = await axios.post('http://localhost:8765/login', {
-      email,
-      password,
-      _csrfToken: cookie['csrfToken'],
-    }, {
-      withCredentials: true
-    })
-
-    console.log(response.data);
-
-    if (response.data.status === "ok") {
-      this.user = response.data.user;
-      return true;
+  mutations: {
+    setUser(state, user) {
+      state.user = user;
     }
-
-    return false;
   },
-
-  logout: async (to, from, next) => {
-    const response1 = await axios.get('http://localhost:8765/logout', {
-      withCredentials: true
-    });
-    VueSession.user = null;
-    next('/login');
+  getters: {
+    getUser: state => {
+      return state.user;
+    },
+    isLoggedIn: state => {
+      return (state.user !== null);
+    },
   }
-
-}
-Vue.use(VueSession);
+})
 
 // ルーティング
 const vueRouter = new VueRouter({
@@ -86,33 +42,20 @@ const vueRouter = new VueRouter({
   routes: [
     { path: '/', component: HomesIndex },
     { path: '/login', component: HomesLogin },
-    { path: '/logout', beforeEnter: VueSession.logout },
     { path: '/profile', component: HomesProfile },
+    { path: '/users', component: UsersIndex },
     { path: '*', component: { render: h => h('div', 'error') } },
-  ]
+  ],
 });
 
-// 認証
-vueRouter.beforeEach((to, from, next) => {
-  console.debug(to);
-  if (to.matched.some(record => record.path !== '/login')) {
-    if (!VueSession.isLoggedIn()) {
-      return next('/login');
-    }
-  }
-  next();
-});
-
-// 認可
-vueRouter.beforeEach((to, from, next) => {
-  next();
+// コンポーネント
+const components = require.context('@/components', false, /\.vue$/);
+components.keys().forEach(key => {
+  Vue.component(key.replace(/(\.\/|\.vue)/g, ''), components(key).default);
 });
 
 new Vue({
   router: vueRouter,
+  store: vueStore,
   render: h => h(AppLayout)
 }).$mount('#app');
-
-window.addEventListener('message', function onWebpackMessage(e) {
-  console.clear();
-});

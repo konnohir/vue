@@ -9,9 +9,13 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "bootstrap-vue": "^2.6.1",
     "core-js": "^3.6.4",
+    "node-sass": "^4.13.1",
+    "sass-loader": "^8.0.2",
     "vue": "^2.6.11",
-    "vue-router": "^3.1.5"
+    "vue-router": "^3.1.5",
+    "vuex": "^3.1.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.2.0",
@@ -36,7 +40,8 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "no-unused-vars": "off"
+      "no-unused-vars": "off",
+      "no-constant-condition": "off"
     }
   },
   "browserslist": [
@@ -47,5 +52,8 @@
     "presets": [
       "@vue/cli-plugin-babel/preset"
     ]
+  },
+  "vue": {
+    "productionSourceMap": false
   }
 }

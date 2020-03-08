@@ -1,0 +1,201 @@
+@charset "utf-8";
+
+$input-btn-padding-y:         .25rem;
+$input-btn-padding-x:         .5rem;
+$input-btn-font-size:         .875rem;
+$input-btn-line-height:       1.5;
+
+@import 'bootstrap/scss/bootstrap.scss';
+@import 'bootstrap-vue/src/index.scss';
+
+  
+/** Common */
+
+body {
+    min-width: 320px;
+    overflow-y: scroll;
+}
+
+h1, h2, h3 {
+    font-size: 150%;
+    margin: 0;
+}
+
+ul {
+    list-style-type: none;
+}
+
+header {
+    white-space: nowrap;
+    overflow-x: hidden;
+}
+
+/** Custom table */
+
+.table-wrap {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    border: solid 1px black;
+    min-height: 584px;
+}
+
+.table-wrap table {
+    width: 100%;
+}
+
+.table-wrap th, .table-wrap td {
+    border-bottom: solid 1px gray;
+    border-right: solid 1px gray;
+    vertical-align: top
+}
+
+.table-wrap thead th {
+    background: lightsteelblue;
+    color: black;
+    font-weight: normal;
+    border-top-style: none;
+}
+
+.table-wrap tbody tr:hover {
+    background: #CCFFCC;
+}
+
+.table-wrap th:first-child, .table-wrap td:first-child {
+    border-left-style: none;
+}
+
+.table-wrap th:last-child, .table-wrap td:last-child {
+    border-right-style: none;
+}
+
+.table-wrap thead a {
+    color: black;
+    font-weight: normal;
+}
+
+.table-wrap tr:nth-child(even) {
+    background: #eee;
+}
+
+.table-wrap .asc:after {
+    content: '▽';
+    font-size: 50%;
+}
+
+.table-wrap .desc:after {
+    content: '△';
+    font-size: 50%;
+}
+
+.pagination-wrap {
+    float: right;
+}
+
+.pagination-wrap+* {
+    clear: both;
+}
+
+.pagination-wrap .pagination {
+    margin-bottom: 0;
+}
+
+/** Custom list */
+
+.dl-wrap {
+    border-top: solid 1px rgb(222, 226, 230);
+}
+
+.dl-wrap dl {
+    border-bottom: solid 1px rgb(222, 226, 230);
+}
+
+.dl-wrap>.row {
+    margin: 0;
+}
+
+.dl-wrap>.row>dt, .dl-wrap>.row>dd {
+    padding: 0;
+    margin-bottom: 0;
+    min-height: 1.5em;
+}
+
+.dl-wrap.dl-wrap-form dt,.dl-wrap.dl-wrap-form dd {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+.dl-wrap.dl-wrap-form dt {
+    /* font-weight: normal; */
+}
+
+/** Button field wrap */
+
+.button-wrap {
+    text-align: center;
+    letter-spacing: -0.4em;
+}
+
+.button-wrap .btn {
+    margin: 2px;
+    letter-spacing: normal;
+}
+
+/** Global lyout */
+
+body>header h1 {
+    font-size: 100%;
+    line-height: 30px;
+    height: 40px;
+}
+
+body>header .nav-item:hover {
+    background: darkslategray;
+}
+
+@media (min-width: 768px) {
+    .side-menu {
+        flex: 0 0 139px;
+    }
+}
+
+/** Form */
+
+form>.input {
+    margin-bottom: 1em;
+}
+
+.form-check {
+    padding-left: 0;
+}
+
+.error-message {
+    color: #cc0000;
+    font-size: 85%;
+}
+
+.required label::after {
+    color: #cc0000;
+    content: '*';
+}
+
+/** Page */
+
+.view, .add, .edit, .Homes.profile, .Homes.password {
+    width: 50%;
+    min-width: 722px;
+    margin: 0 auto;
+}
+
+@media (max-width: 767px) {
+    .view, .add, .edit, .Homes.profile, .Homes.password {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+.Homes.login {
+    max-width: 320px;
+    margin: 0 auto;
+}
