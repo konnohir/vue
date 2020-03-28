@@ -27,7 +27,7 @@ export default {
     value: { type: Number, required: true },
     count: { type: Number, required: true },
     perPage: { type: Number, required: true },
-    modulus: { type: Number, required: false, default: 5 }
+    modulus: { type: Number, required: false, default: 2 }
   },
   data() {
     return {

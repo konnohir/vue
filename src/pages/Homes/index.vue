@@ -1,10 +1,13 @@
 <template>
   <div class="home">
-    Profile
+    Home
   </div>
 </template>
 
 <script>
 export default {
+  async created() {
+    console.log("index")
+  }
 }
 </script>

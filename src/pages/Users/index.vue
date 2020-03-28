@@ -1,15 +1,18 @@
 <template>
-  <div class="w-100 mx-auto">
+  <section>
     <h2 class="mb-2">ユーザーマスタ</h2>
     <!-- 検索条件エリア -->
-    <b-card class="mb-2" tag="form">
-      <div class="input email">
-        <label for="filter-email">メールアドレス</label>
-        <b-input type="email" name="filter[email]" id="filter-email" />
+    <my-filter-area :filter="filter" @change="onUpdate">
+      <!-- メールアドレス -->
+      <my-input v-model="filter.email" label="メールアドレス" id="filter-email" />
+      <!-- 説明 -->
+      <my-input v-model="filter.desc" label="説明" id="filter-desc" />
+      <!-- チェックボックス -->
+      <div class="form-group">
+        <b-check v-model="filter.check1" value="1" id="filter-check1">check1</b-check>
+        <b-check v-model="filter.check1" value="2" id="filter-check2">check2</b-check>
       </div>
-      <b-button variant="outline-secondary">条件クリア</b-button>
-      <b-button variant="outline-info" type="submit" @click.prevent="users={}">検索</b-button>
-    </b-card>
+    </my-filter-area>
     <!-- アクションボタン -->
     <b-button-group class="mb-2">
       <b-button variant="outline-primary">新規作成</b-button>
@@ -21,7 +24,6 @@
     </b-button-group>
     <!-- ページネーション -->
     <pagination v-model="paging.page" v-bind="paging" />
-    {{paging}}
     <!-- 検索結果リスト -->
     <div class="table-wrap mb-2">
       <table>
@@ -72,33 +74,38 @@
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
+
 export default {
   data() {
     return {
-      filter: {
-        email: ""
-      },
+      filter: { check1: [] },
       paging: {
         count: 897,
         perPage: 20,
-        page: 6,
+        page: 1
       },
-      users: [
+      users: []
+    };
+  },
+  methods: {
+    onUpdate(newValue) {
+      this.filter = newValue;
+      this.users = [
         {
           id: 1,
-          email: "user01@example.com",
+          email: (this.filter.email || "user01") + "@example.com",
           role: {
             name: "管理者"
           },
           password_issue: true,
           login_failed_count: 0
         }
-      ]
-    };
+      ];
+    }
   }
 };
 </script>

@@ -4,11 +4,12 @@ import Vuex from 'vuex'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
 import "@/assets/common.scss";
-import AppLayout from '@/views/AppLayout.vue'
-import HomesIndex from '@/views/Homes/index.vue'
-import HomesLogin from '@/views/Homes/login.vue'
-import HomesProfile from '@/views/Homes/profile.vue'
-import UsersIndex from '@/views/Users/index.vue'
+import AppLayout from '@/pages/AppLayout.vue'
+import HomesIndex from '@/pages/Homes/index.vue'
+import HomesLogin from '@/pages/Homes/login.vue'
+import HomesLogout from '@/pages/Homes/logout.vue'
+import HomesProfile from '@/pages/Homes/profile.vue'
+import UsersIndex from '@/pages/Users/index.vue'
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
@@ -16,23 +17,47 @@ Vue.use(Vuex)
 Vue.use(BootstrapVue)
 
 // データストア
-const vueStore = new Vuex.Store({
+const excute = {
   state: {
-    user: null
+    isExcute: false,
   },
   mutations: {
-    setUser(state, user) {
-      state.user = user;
+    setExcute(state, isExcute) {
+      console.log(isExcute)
+      state.isExcute = isExcute;
     }
   },
   getters: {
-    getUser: state => {
-      return state.user;
-    },
-    isLoggedIn: state => {
-      return (state.user !== null);
+    isExcute: state => {
+      return state.isExcute;
     },
   }
+}
+const identify = {
+  state: {
+    identify: JSON.parse(localStorage.getItem('identify'))
+  },
+  mutations: {
+    setIdentify(state, identify) {
+      state.identify = identify;
+      if (identify) {
+        localStorage.setItem('identify', JSON.stringify(identify));
+      } else {
+        localStorage.removeItem('identify');
+      }
+    }
+  },
+  getters: {
+    identify: state => {
+      return state.identify;
+    },
+    isLoggedIn: state => {
+      return (state.identify !== null);
+    },
+  }
+}
+const vueStore = new Vuex.Store({
+  modules: [identify, excute]
 })
 
 // ルーティング
@@ -42,6 +67,7 @@ const vueRouter = new VueRouter({
   routes: [
     { path: '/', component: HomesIndex },
     { path: '/login', component: HomesLogin },
+    { path: '/logout', component: HomesLogout },
     { path: '/profile', component: HomesProfile },
     { path: '/users', component: UsersIndex },
     { path: '*', component: { render: h => h('div', 'error') } },
@@ -49,9 +75,9 @@ const vueRouter = new VueRouter({
 });
 
 // コンポーネント
-const components = require.context('@/components', false, /\.vue$/);
+const components = require.context('@/components', true, /\.vue$/);
 components.keys().forEach(key => {
-  Vue.component(key.replace(/(\.\/|\.vue)/g, ''), components(key).default);
+  Vue.component(key.replace(/.*\/(.*?).vue/g, '$1'), components(key).default);
 });
 
 new Vue({
