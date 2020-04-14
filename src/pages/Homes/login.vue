@@ -11,17 +11,15 @@
         v-model="password"
       />
       <!-- ログイン -->
-      <my-button
-        type="submit"
-        variant="success"
-        block
-        @click.prevent="doLogin"
-      >Login</my-button>
+      <my-button type="submit" variant="success" block @click.prevent="doLogin">Login</my-button>
     </form>
   </section>
 </template>
 
 <script>
+/**
+ * ログイン画面
+ */
 export default {
   /**
    * データ
@@ -47,7 +45,7 @@ export default {
      */
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
-    },
+    }
   },
   /**
    * ページ遷移前フック
@@ -63,8 +61,18 @@ export default {
     /**
      * ログインボタン押下
      */
-    doLogin() {
-      this.$emit("login", { email: this.email, password: this.password });
+    async doLogin() {
+      // ログイントークンを作成する
+      const token = {
+        email: this.email,
+        password: this.password
+      };
+      // ログイン要求
+      const identify = await this.$store.dispatch("login", token);
+      if (identify) {
+        // ログイン成功を親コンポーネントに通知 ($routeを変更する)
+        this.$emit("onIdentifyUpdated");
+      }
     }
   }
 };

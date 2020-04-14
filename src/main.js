@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import qs from 'qs';
 
 import "@/assets/common.scss";
 import AppLayout from '@/pages/AppLayout.vue'
@@ -12,6 +13,7 @@ import HomesProfile from '@/pages/Homes/profile.vue'
 import UsersIndex from '@/pages/Users/index.vue'
 
 Vue.config.productionTip = false;
+Vue.config.devtools = false;
 Vue.use(VueRouter);
 Vue.use(Vuex)
 Vue.use(BootstrapVue)
@@ -23,13 +25,33 @@ const excute = {
   },
   mutations: {
     setExcute(state, isExcute) {
-      console.log(isExcute)
       state.isExcute = isExcute;
     }
   },
   getters: {
     isExcute: state => {
       return state.isExcute;
+    },
+  }
+}
+const flash = {
+  state: {
+    message: null,
+    varient: null,
+  },
+  mutations: {
+    info(state, message) {
+      state.message = message;
+      state.varient = "info";
+    },
+    error(state, message) {
+      state.message = message;
+      state.varient = "error";
+    }
+  },
+  getters: {
+    flashMessage: state => {
+      return state.message;
     },
   }
 }
@@ -54,10 +76,44 @@ const identify = {
     isLoggedIn: state => {
       return (state.identify !== null);
     },
+  },
+  actions: {
+    /**
+     * ログイン
+     */
+    async login(context, token) {
+      const identify = await new Promise(resolve =>
+        setTimeout(
+          () =>
+            resolve({
+              email: token.email || "user01@example.com",
+              role_id: token.role_id || 1
+            }),
+          300
+        )
+      )
+      if (identify) {
+        context.commit('setIdentify', identify)
+      }
+      return identify;
+    },
+    /**
+     * ログアウト
+     */
+    async logout(context) {
+      context.commit('setIdentify', null)
+      await new Promise(resolve =>
+        setTimeout(
+          () =>
+            resolve(),
+          300
+        )
+      )
+    }
   }
 }
 const vueStore = new Vuex.Store({
-  modules: [identify, excute]
+  modules: [identify, excute, flash]
 })
 
 // ルーティング
@@ -72,6 +128,26 @@ const vueRouter = new VueRouter({
     { path: '/users', component: UsersIndex },
     { path: '*', component: { render: h => h('div', 'error') } },
   ],
+  parseQuery(query) {
+    return qs.parse(query);
+  },
+  stringifyQuery(query) {
+    const filteredQuery = {};
+    Object.keys(query).forEach(key => {
+      const value = query[key];
+      if (
+        value === "" ||
+        value === false ||
+        value === null ||
+        (Array.isArray(value) && value.length === 0)
+      ) {
+        return;
+      }
+      filteredQuery[key] = query[key];
+    });
+    var result = qs.stringify(filteredQuery);
+    return result ? ('?' + result) : '';
+  }
 });
 
 // コンポーネント
@@ -80,7 +156,7 @@ components.keys().forEach(key => {
   Vue.component(key.replace(/.*\/(.*?).vue/g, '$1'), components(key).default);
 });
 
-new Vue({
+window.vm = new Vue({
   router: vueRouter,
   store: vueStore,
   render: h => h(AppLayout)

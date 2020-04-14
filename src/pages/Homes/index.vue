@@ -1,13 +1,11 @@
 <template>
-  <div class="home">
-    Home
-  </div>
+  <section>Home</section>
 </template>
 
 <script>
 export default {
   async created() {
-    console.log("index")
+    console.log("index");
   }
-}
+};
 </script>

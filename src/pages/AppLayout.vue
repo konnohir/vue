@@ -7,7 +7,10 @@
       <b-collapse id="nav-collapse" is-nav v-if="identify">
         <!-- Left aligned nav items -->
         <b-navbar-nav>
+          <!-- ユーザー -->
           <b-nav-item to="/users">Users</b-nav-item>
+          <!-- 権限 -->
+          <b-nav-item to="/roles">Roles</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -18,9 +21,9 @@
       </b-collapse>
     </b-navbar>
     <!-- メインコンテンツ -->
-    <b-container fluid tag="main" class="py-3">
-      <router-view v-if="isReady" @login="login" @logout="logout" />
-    </b-container>
+    <main class="container-fluid py-3 mb-5">
+      <router-view v-if="isReady" @onIdentifyUpdated="onIdentifyUpdated" />
+    </main>
     <!-- フッター -->
     <footer class="fixed-bottom border-top">
       <p class="text-center">© 2020 footer</p>
@@ -29,6 +32,9 @@
 </template>
 
 <script>
+/**
+ * アプリケーション共通レイアウト
+ */
 export default {
   /**
    * データ
@@ -37,7 +43,7 @@ export default {
     return {
       /**
        * 初期化完了フラグ
-       * trueならメインコンテンツが表示される
+       * trueならメインコンテンツを表示する
        */
       isReady: false
     };
@@ -47,7 +53,7 @@ export default {
    */
   computed: {
     /**
-     * ログイン中のユーザー
+     * ログインユーザー情報
      */
     identify() {
       return this.$store.getters.identify;
@@ -86,54 +92,30 @@ export default {
   /**
    * 初期化フック
    */
-  async created() {
-    // 未ログインならログイン画面を表示する
-    if (!this.isLoggedIn && this.$route.matched[0].path !== "/login") {
-      this.$router.push(this.loginPage);
-    }
-
-    // ログイン済みならトップ画面を表示する
-    if (this.isLoggedIn && this.$route.matched[0].path === "/login") {
-      this.$router.push(this.redirectPage);
-    }
-
-    // メインコンテンツを表示する
-    this.isReady = true;
+  created() {
+    this.onIdentifyUpdated();
   },
   /**
    * イベント
    */
   methods: {
     /**
-     * ログイン
+     * ログイン状態を確認し、ページを遷移する
      */
-    async login(token) {
-      const identify = await loginApi(token);
-      if (identify) {
-        this.$store.commit("setIdentify", identify);
+    onIdentifyUpdated() {
+      // 未ログインならログイン画面へ遷移する
+      if (!this.isLoggedIn && this.$route.matched[0].path !== "/login") {
+        this.$router.push(this.loginPage);
+      }
+
+      // ログイン済みならトップ画面(?redirect=があれば該当ページ)へ遷移する
+      if (this.isLoggedIn && this.$route.matched[0].path === "/login") {
         this.$router.push(this.redirectPage);
       }
-    },
-    /**
-     * ログアウト
-     */
-    async logout() {
-      this.$store.commit("setIdentify", null);
-      this.$router.push(this.loginPage);
+
+      // メインコンテンツを表示する
+      this.isReady = true;
     }
   }
 };
-
-function loginApi(identify) {
-  return new Promise(resolve =>
-    setTimeout(
-      () =>
-        resolve({
-          email: identify.email || "user01@example.com",
-          role_id: identify.role_id || 1
-        }),
-      300
-    )
-  );
-}
 </script>
