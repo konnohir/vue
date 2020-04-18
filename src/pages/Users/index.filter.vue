@@ -1,6 +1,6 @@
 <template>
   <!-- 検索条件エリア -->
-  <my-filter-area>
+  <filter-section>
     <!-- メールアドレス -->
     <my-input
       :value="email"
@@ -20,18 +20,11 @@
       <my-button variant="outline-secondary" @click="doClear">条件クリア</my-button>
       <my-button variant="outline-info" type="submit" @click.prevent="doSearch">検索</my-button>
     </my-button-wrap>
-  </my-filter-area>
+  </filter-section>
 </template>
 
 <script>
 export default {
-  /**
-   * 親コンポーネントから受け取るメソッド
-   */
-  inject: [
-    // AppPageコンポーネントから受け取る
-    "acceptQuery"
-  ],
   /**
    * 引数
    */
@@ -53,7 +46,9 @@ export default {
       return {
         page: 1,
         email: this.email,
-        role_name: this.role_name
+        role_name: this.role_name,
+        sort: this.$route.query.sort,
+        direction: this.$route.query.direction
       };
     },
     /**
@@ -75,7 +70,7 @@ export default {
     doSearch() {
       this.$router.push({ query: this.searchQuery }).catch(() => {
         // Navigation Duplicated
-        this.acceptQuery();
+        this.$emit("onUpdate");
       });
     },
     /**
@@ -84,7 +79,7 @@ export default {
     doClear() {
       this.$router.push({ query: this.resetQuery }).catch(() => {
         // Navigation Duplicated
-        this.acceptQuery();
+        this.$emit("onUpdate");
       });
     }
   }

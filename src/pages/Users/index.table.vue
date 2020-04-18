@@ -17,7 +17,7 @@
     </b-button-group>
 
     <!-- ページネーション -->
-    <table-pagination :currentPage="currentPage" :totalRows="totalRows" :perPage="perPage" />
+    <table-pagination :currentPage="currentPage" :totalRows="totalRows" :perPage="20" />
 
     <!-- 検索結果リスト -->
     <table-wrap :data="users" :selectedData.sync="selectedUsers">
@@ -55,13 +55,22 @@ export default {
     /**
      * データ件数
      */
-    currentPage: [Number, String],
     totalRows: Number,
-    perPage: Number,
     /**
-     * 一覧
+     * ユーザー一覧
      */
     users: Array
+  },
+  /**
+   * 算出プロパティ
+   */
+  computed: {
+    /**
+     * ページ番号
+     */
+    currentPage() {
+      return parseInt(this.$route.query.page) || 1;
+    }
   },
   /**
    * データ
@@ -89,9 +98,9 @@ export default {
         this.$store.commit("error", "1件選択してください。");
         this.$bvModal.msgBoxOk(`1件選択してください。`, {
           title: "エラー",
-          autoFocusButton: 'ok',
+          autoFocusButton: "ok",
           noCloseOnBackdrop: true,
-          hideHeaderClose: false,
+          hideHeaderClose: false
         });
         return;
       }

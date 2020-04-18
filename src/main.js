@@ -55,26 +55,26 @@ const flash = {
     },
   }
 }
-const identify = {
+const identity = {
   state: {
-    identify: JSON.parse(localStorage.getItem('identify'))
+    identity: JSON.parse(localStorage.getItem('identity'))
   },
   mutations: {
-    setIdentify(state, identify) {
-      state.identify = identify;
-      if (identify) {
-        localStorage.setItem('identify', JSON.stringify(identify));
+    setIdentity(state, identity) {
+      state.identity = identity;
+      if (identity) {
+        localStorage.setItem('identity', JSON.stringify(identity));
       } else {
-        localStorage.removeItem('identify');
+        localStorage.removeItem('identity');
       }
     }
   },
   getters: {
-    identify: state => {
-      return state.identify;
+    identity: state => {
+      return state.identity;
     },
     isLoggedIn: state => {
-      return (state.identify !== null);
+      return (state.identity !== null);
     },
   },
   actions: {
@@ -82,7 +82,7 @@ const identify = {
      * ログイン
      */
     async login(context, token) {
-      const identify = await new Promise(resolve =>
+      const identity = await new Promise(resolve =>
         setTimeout(
           () =>
             resolve({
@@ -92,16 +92,16 @@ const identify = {
           300
         )
       )
-      if (identify) {
-        context.commit('setIdentify', identify)
+      if (identity) {
+        context.commit('setIdentity', identity)
       }
-      return identify;
+      return identity;
     },
     /**
      * ログアウト
      */
     async logout(context) {
-      context.commit('setIdentify', null)
+      context.commit('setIdentity', null)
       await new Promise(resolve =>
         setTimeout(
           () =>
@@ -113,7 +113,7 @@ const identify = {
   }
 }
 const vueStore = new Vuex.Store({
-  modules: [identify, excute, flash]
+  modules: [identity, excute, flash]
 })
 
 // ルーティング

@@ -15,14 +15,6 @@ export default {
     prop: "filter"
   },
   /**
-   * 子コンポーネントに公開するメソッド
-   */
-  provide() {
-    return {
-      acceptQuery: this.acceptQuery
-    }
-  },
-  /**
    * 引数
    */
   props: {
@@ -61,7 +53,6 @@ export default {
             break;
         }
       });
-      result.page = 1;
       return result;
     },
     /**
@@ -80,6 +71,9 @@ export default {
             break;
           case "boolean":
             result[key] = Boolean(value);
+            break;
+          case "undefined":
+            // pass
             break;
           default:
             result[key] = value;

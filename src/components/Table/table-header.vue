@@ -47,6 +47,7 @@ export default {
     route() {
       return {
         query: {
+          page: this.$route.query.page,
           ...this.$route.query,
           sort: this.sort,
           direction: this.direction

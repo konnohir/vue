@@ -4,7 +4,7 @@
     <b-navbar toggleable="md" type="dark" variant="dark">
       <b-navbar-brand to="/">BaseEnv4</b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-      <b-collapse id="nav-collapse" is-nav v-if="identify">
+      <b-collapse id="nav-collapse" is-nav v-if="identity">
         <!-- Left aligned nav items -->
         <b-navbar-nav>
           <!-- ユーザー -->
@@ -15,14 +15,14 @@
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item to="/profile">{{identify.email}}</b-nav-item>
+          <b-nav-item to="/profile">{{identity.email}}</b-nav-item>
           <b-nav-item to="/logout">Logout</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
     <!-- メインコンテンツ -->
     <main class="container-fluid py-3 mb-5">
-      <router-view v-if="isReady" @onIdentifyUpdated="onIdentifyUpdated" />
+      <router-view @onIdentityUpdated="onIdentityUpdated" />
     </main>
     <!-- フッター -->
     <footer class="fixed-bottom border-top">
@@ -37,26 +37,14 @@
  */
 export default {
   /**
-   * データ
-   */
-  data() {
-    return {
-      /**
-       * 初期化完了フラグ
-       * trueならメインコンテンツを表示する
-       */
-      isReady: false
-    };
-  },
-  /**
    * 算出プロパティ
    */
   computed: {
     /**
      * ログインユーザー情報
      */
-    identify() {
-      return this.$store.getters.identify;
+    identity() {
+      return this.$store.getters.identity;
     },
     /**
      * ログイン済み判定
@@ -93,7 +81,7 @@ export default {
    * 初期化フック
    */
   created() {
-    this.onIdentifyUpdated();
+    this.onIdentityUpdated();
   },
   /**
    * イベント
@@ -102,7 +90,7 @@ export default {
     /**
      * ログイン状態を確認し、ページを遷移する
      */
-    onIdentifyUpdated() {
+    onIdentityUpdated() {
       // 未ログインならログイン画面へ遷移する
       if (!this.isLoggedIn && this.$route.matched[0].path !== "/login") {
         this.$router.push(this.loginPage);
@@ -112,9 +100,6 @@ export default {
       if (this.isLoggedIn && this.$route.matched[0].path === "/login") {
         this.$router.push(this.redirectPage);
       }
-
-      // メインコンテンツを表示する
-      this.isReady = true;
     }
   }
 };

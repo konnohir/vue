@@ -2,12 +2,12 @@
   <section>
     <form>
       <!-- メールアドレス -->
-      <my-input type="text" autocomplete="username" placeholder="email" v-model="email" />
+      <my-input type="text" autocomplete="username" placeholder="メールアドレス" v-model="email" />
       <!-- パスワード -->
       <my-input
         type="password"
         autocomplete="current-password"
-        placeholder="password"
+        placeholder="パスワード"
         v-model="password"
       />
       <!-- ログイン -->
@@ -49,6 +49,7 @@ export default {
   },
   /**
    * ページ遷移前フック
+   * @refs https://router.vuejs.org/ja/guide/advanced/navigation-guards.html#ルート単位ガード
    */
   beforeRouteLeave(to, from, next) {
     // 未ログイン時は他のページに遷移しない
@@ -68,10 +69,10 @@ export default {
         password: this.password
       };
       // ログイン要求
-      const identify = await this.$store.dispatch("login", token);
-      if (identify) {
+      const identity = await this.$store.dispatch("login", token);
+      if (identity) {
         // ログイン成功を親コンポーネントに通知 ($routeを変更する)
-        this.$emit("onIdentifyUpdated");
+        this.$emit("onIdentityUpdated");
       }
     }
   }

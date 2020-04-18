@@ -10,15 +10,15 @@ export default {
    * 引数
    */
   props: {
-    checked: { type: Array },
-    value: { type: Object },
+    checked: Array,
+    value: Object,
   },
   /**
    * イベント
    */
   methods: {
     /**
-     * ソートリンク押下
+     * チェックボックス選択
      */
     input(event) {
       this.$emit('input', event);

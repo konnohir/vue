@@ -3,9 +3,9 @@
     <!-- タイトル -->
     <h2 class="mb-2">ユーザーマスタ</h2>
     <!-- 検索条件入力エリア -->
-    <index-filter v-bind.sync="filter"/>
+    <index-filter v-bind.sync="filter" @onUpdate="onUpdate"/>
     <!-- 一覧表示エリア -->
-    <index-table v-bind.sync="table" :currentPage="parseInt(filter.page)" />
+    <index-table v-bind.sync="table" />
   </AppPage>
 </template>
 
@@ -30,24 +30,18 @@ export default {
        * 検索条件
        */
       filter: {
+        // メールアドレス
         email: "",
+        // 権限名
         role_name: ""
       },
       /**
        * テーブル
        */
       table: {
-        /**
-         * 1ページ当たりの表示件数
-         */
-        perPage: 20,
-        /**
-         * 合計データ件数
-         */
+        // 合計データ件数
         totalRows: 0,
-        /**
-         * データ
-         */
+        // ユーザー一覧
         users: [],
       }
     };
@@ -83,7 +77,7 @@ export default {
           login_failed_count: 0
         }
       );
-      this.table.totalRows = this.table.users.length;
+      this.table.totalRows = this.table.users.length * 1001;
     },
   }
 };

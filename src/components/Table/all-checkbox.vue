@@ -10,8 +10,8 @@ export default {
    * 引数
    */
   props: {
-    selected: { type: Array },
-    all: { type: Array }
+    selected: Array,
+    all: Array
   },
   computed: {
     checked() {
@@ -23,7 +23,7 @@ export default {
    */
   methods: {
     /**
-     * ソートリンク押下
+     * チェックボックス選択
      */
     onChange(value) {
       if (value) {
