@@ -34,7 +34,7 @@ export default {
      */
     email: String,
     /**
-     * 権限名
+     * 権限名           
      */
     role_name: String
   },

@@ -1,6 +1,6 @@
 <template>
-  <li class="page-item">
-    <a class="page-link" :href="href" @click.prevent="click"><slot>{{page}}</slot></a>
+  <li class="page-item" :class="{'active': currentPage === page}">
+    <router-link class="page-link" :to="to"><slot>{{page}}</slot></router-link>
   </li>
 </template>
 <script>
@@ -12,7 +12,8 @@ export default {
    * 引数
    */
   props: {
-    page: Number
+    page: Number,
+    currentPage: Number,
   },
   computed: {
     /**
@@ -24,20 +25,9 @@ export default {
     /**
      * aタグのhref
      */
-    href() {
+    to() {
       return this.$router.resolve({ query: {...this.query, page: this.page} }).route.fullPath;
     }
   },
-  /**
-   * イベント
-   */
-  methods: {
-    /**
-     * ページネーションリンク押下
-     */
-    click() {
-      this.$router.push({query: {...this.query, page: this.page}}).catch(()=>{});
-    }
-  }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <section>
     <!-- アクションボタン -->
     <b-button-group class="mb-2">
       <!-- 新規作成ボタン -->
@@ -33,7 +33,7 @@
       <template #tbody="{row: user}">
         <!-- メールアドレス -->
         <td>
-          <router-link to="/users/view/1">{{user.email}}</router-link>
+          <router-link :to="'/users/view/' + user.id">{{user.email}}</router-link>
         </td>
         <!-- 権限 -->
         <td>{{user.role.name}}</td>
@@ -43,7 +43,7 @@
         <td>{{user.password_issue ? '〇' : ''}}</td>
       </template>
     </table-wrap>
-  </div>
+  </section>
 </template>
 
 <script>

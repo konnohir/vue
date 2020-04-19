@@ -11,6 +11,7 @@ import HomesLogin from '@/pages/Homes/login.vue'
 import HomesLogout from '@/pages/Homes/logout.vue'
 import HomesProfile from '@/pages/Homes/profile.vue'
 import UsersIndex from '@/pages/Users/index.vue'
+import UsersEdit from '@/pages/Users/edit.vue'
 
 Vue.config.productionTip = false;
 Vue.config.devtools = false;
@@ -126,6 +127,8 @@ const vueRouter = new VueRouter({
     { path: '/logout', component: HomesLogout },
     { path: '/profile', component: HomesProfile },
     { path: '/users', component: UsersIndex },
+    { path: '/users/add', component: UsersEdit },
+    { path: '/users/edit/:id', component: UsersEdit },
     { path: '*', component: { render: h => h('div', 'error') } },
   ],
   parseQuery(query) {

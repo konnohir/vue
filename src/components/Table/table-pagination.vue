@@ -7,7 +7,7 @@
       <pagination-link :page="firstPage" v-if="showFirstPage">&lt;&lt;</pagination-link>
       <pagination-link
         :page="page"
-        :class="{active: currentPage == page}"
+        :currentPage="currentPage"
         v-for="page in pageList"
         :key="page"
       >{{page}}</pagination-link>
