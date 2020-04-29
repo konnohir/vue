@@ -1,28 +1,31 @@
 <template>
-  <AppPage v-model="filter" @onUpdate="onUpdate">
+  <app-page v-model="filter" @onUpdate="onUpdate">
     <!-- タイトル -->
     <h2 class="mb-2">ユーザーマスタ</h2>
     <!-- 検索条件入力エリア -->
     <index-filter v-bind.sync="filter" @onUpdate="onUpdate"/>
     <!-- 一覧表示エリア -->
     <index-table v-bind.sync="table" />
-  </AppPage>
+  </app-page>
 </template>
 
 <script>
 import IndexFilter from "./index.filter";
 import IndexTable from "./index.table";
 
+/**
+ * ユーザー一覧画面
+ */
 export default {
   /**
-   * コンポーネント
+   * この画面で使用するコンポーネント
    */
   components: {
     IndexFilter,
     IndexTable
   },
   /**
-   * データ
+   * この画面で使用するデータ
    */
   data() {
     return {
@@ -39,10 +42,10 @@ export default {
        * テーブル
        */
       table: {
-        // 合計データ件数
-        totalRows: 0,
         // ユーザー一覧
         users: [],
+        // 合計データ件数
+        totalRows: 0,
       }
     };
   },
@@ -53,31 +56,16 @@ export default {
     /**
      * 一覧更新
      */
-    onUpdate() {
-      console.log("%conUpdate", "background:orange");
-      this.table.users = [
-        {
-          id: 1,
-          email: (this.filter.email || "user01") + "@example.com",
-          role: {
-            name: "管理者"
-          },
-          password_issue: true,
-          login_failed_count: 0
-        }
-      ];
-      this.table.users.push(
-        {
-          id: 2,
-          email: ("user02") + "@example.com",
-          role: {
-            name: "管理者"
-          },
-          password_issue: false,
-          login_failed_count: 0
-        }
-      );
-      this.table.totalRows = this.table.users.length * 1001;
+    async onUpdate() {
+      const response = await this.$store.dispatch('get', {
+        url: '/users',
+        query: this.$route.query,
+      });
+      if (response === null) {
+        return;
+      }
+      this.table.users = response.users
+      this.table.totalRows = response.totalRows;
     },
   }
 };

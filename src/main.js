@@ -19,6 +19,42 @@ Vue.use(VueRouter);
 Vue.use(Vuex)
 Vue.use(BootstrapVue)
 
+// ルーティング
+const vueRouter = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes: [
+    { path: '/', component: HomesIndex },
+    { path: '/login', component: HomesLogin },
+    { path: '/logout', component: HomesLogout },
+    { path: '/profile', component: HomesProfile },
+    { path: '/users', component: UsersIndex },
+    { path: '/users/add', component: UsersEdit },
+    { path: '/users/edit/:id', component: UsersEdit },
+    { path: '*', component: { render: h => h('div', 'error') } },
+  ],
+  parseQuery(query) {
+    return qs.parse(query);
+  },
+  stringifyQuery(query) {
+    const filteredQuery = {};
+    Object.keys(query).forEach(key => {
+      const value = query[key];
+      if (
+        value === "" ||
+        value === false ||
+        value === null ||
+        (Array.isArray(value) && value.length === 0)
+      ) {
+        return;
+      }
+      filteredQuery[key] = query[key];
+    });
+    var result = qs.stringify(filteredQuery);
+    return result ? ('?' + result) : '';
+  }
+});
+
 // データストア
 const excute = {
   state: {
@@ -113,45 +149,53 @@ const identity = {
     }
   }
 }
-const vueStore = new Vuex.Store({
-  modules: [identity, excute, flash]
-})
-
-// ルーティング
-const vueRouter = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
-    { path: '/', component: HomesIndex },
-    { path: '/login', component: HomesLogin },
-    { path: '/logout', component: HomesLogout },
-    { path: '/profile', component: HomesProfile },
-    { path: '/users', component: UsersIndex },
-    { path: '/users/add', component: UsersEdit },
-    { path: '/users/edit/:id', component: UsersEdit },
-    { path: '*', component: { render: h => h('div', 'error') } },
-  ],
-  parseQuery(query) {
-    return qs.parse(query);
-  },
-  stringifyQuery(query) {
-    const filteredQuery = {};
-    Object.keys(query).forEach(key => {
-      const value = query[key];
-      if (
-        value === "" ||
-        value === false ||
-        value === null ||
-        (Array.isArray(value) && value.length === 0)
-      ) {
-        return;
+const api = {
+  actions: {
+    /**
+     * GETメソッド
+     */
+    async get(context, data) {
+      console.log("%cGET " + data.url, "background:orange");
+      if (data.url==='/users') {
+        const users = [
+          {
+            id: 1,
+            email: (vueRouter.currentRoute.query.email || "user01") + "@example.com",
+            role: {
+              name: "管理者"
+            },
+            password_issue: true,
+            login_failed_count: 0
+          },
+          {
+            id: 2,
+            email: ("user02") + "@example.com",
+            role: {
+              name: "管理者"
+            },
+            password_issue: false,
+            login_failed_count: 0
+          }
+        ];
+        const totalRows = users.length * 100
+        return {
+          users,
+          totalRows,
+        }
+      }else {
+        return {
+          user: {
+            email: data.url,
+            role_id: 1,
+          }
+        }
       }
-      filteredQuery[key] = query[key];
-    });
-    var result = qs.stringify(filteredQuery);
-    return result ? ('?' + result) : '';
+    },
   }
-});
+}
+const vueStore = new Vuex.Store({
+  modules: [identity, api, excute, flash]
+})
 
 // コンポーネント
 const components = require.context('@/components', true, /\.vue$/);

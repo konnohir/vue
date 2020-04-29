@@ -38,6 +38,9 @@ export default {
      */
     role_name: String
   },
+  /**
+   * 算出プロパティ
+   */
   computed: {
     /**
      * 検索クエリ

@@ -65,7 +65,7 @@ export default {
       return "/login?redirect=" + redirectTo;
     },
     /**
-     * ログイン後遷移先のURL
+     * ログイン後遷移先画面のURL
      */
     redirectPage() {
       // URLの「?redirect=」 に続く文字列を取得
