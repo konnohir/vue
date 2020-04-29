@@ -18,7 +18,7 @@
     <!-- 検索・条件クリアボタン -->
     <my-button-wrap>
       <my-button variant="outline-secondary" @click="doClear">条件クリア</my-button>
-      <my-button variant="outline-info" type="submit" @click.prevent="doSearch">検索</my-button>
+      <my-submit variant="outline-info" @click="doSearch">検索</my-submit>
     </my-button-wrap>
   </filter-section>
 </template>
@@ -34,7 +34,7 @@ export default {
      */
     email: String,
     /**
-     * 権限名           
+     * 権限名
      */
     role_name: String
   },
@@ -58,9 +58,7 @@ export default {
      * 条件クリアクエリ
      */
     resetQuery() {
-      return {
-        page: 1
-      };
+      return {};
     }
   },
   /**
@@ -84,7 +82,7 @@ export default {
         // Navigation Duplicated
         this.$emit("onUpdate");
       });
-    }
+    },
   }
 };
 </script>

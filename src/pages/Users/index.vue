@@ -1,31 +1,83 @@
 <template>
   <app-page v-model="filter" @onUpdate="onUpdate">
+    <!-- ------------------------------------- -->
     <!-- タイトル -->
+    <!-- ------------------------------------- -->
     <h2 class="mb-2">ユーザーマスタ</h2>
-    <!-- 検索条件入力エリア -->
-    <index-filter v-bind.sync="filter" @onUpdate="onUpdate"/>
-    <!-- 一覧表示エリア -->
-    <index-table v-bind.sync="table" />
+
+    <!-- ------------------------------------- -->
+    <!-- 検索条件領域 -->
+    <!-- ------------------------------------- -->
+    <filter-section>
+      <!-- メールアドレス -->
+      <my-input v-model="filter.email" label="メールアドレス" />
+      <!-- 権限 -->
+      <my-input v-model="filter.role_name" label="権限" />
+      <!-- 検索・条件クリアボタン -->
+      <my-button-wrap>
+        <my-button variant="outline-secondary" @click="doClear">条件クリア</my-button>
+        <my-button variant="outline-info" type="submit" @click.prevent="doSearch">検索</my-button>
+      </my-button-wrap>
+    </filter-section>
+
+    <!-- ------------------------------------- -->
+    <!-- 一覧表示領域 -->
+    <!-- ------------------------------------- -->
+    <section>
+      <!-- アクションボタン -->
+      <b-button-group class="mb-2">
+        <!-- 新規作成ボタン -->
+        <b-button variant="outline-primary" @click="doAdd">新規作成</b-button>
+        <!-- 編集ボタン -->
+        <b-button variant="outline-primary" @click="doEdit">編集</b-button>
+        <!-- パスワード再発行ボタン -->
+        <b-button variant="outline-success">パスワード再発行</b-button>
+        <!-- アカウントロックボタン -->
+        <b-button variant="outline-success">アカウントロック</b-button>
+        <!-- ロック解除ボタン -->
+        <b-button variant="outline-success">ロック解除</b-button>
+        <!-- 削除ボタン -->
+        <b-button variant="outline-danger">削除</b-button>
+      </b-button-group>
+
+      <!-- ページネーション -->
+      <table-pagination :currentPage="currentPage" :totalRows="table.totalRows" :perPage="20" />
+
+      <!-- 検索結果リスト -->
+      <table-wrap :data="table.users" :selectedData.sync="selectedUsers">
+        <!-- メールアドレス -->
+        <table-header sort="email" class="w-100">メールアドレス</table-header>
+        <!-- 権限 -->
+        <table-header sort="Roles.name">権限</table-header>
+        <!-- アカウントロック -->
+        <table-header sort="login_failed_count">アカウントロック</table-header>
+        <!-- パスワード発行 -->
+        <table-header sort="password_issue">パスワード発行</table-header>
+        <!-- 行データ -->
+        <template #tbody="{row: user}">
+          <!-- メールアドレス -->
+          <td>
+            <router-link :to="'/users/edit/' + user.id">{{user.email}}</router-link>
+          </td>
+          <!-- 権限 -->
+          <td>{{user.role.name}}</td>
+          <!-- アカウントロック -->
+          <td>{{user.login_failed_count >= 5 ? '〇' : ''}}</td>
+          <!-- パスワード発行 -->
+          <td>{{user.password_issue ? '〇' : ''}}</td>
+        </template>
+      </table-wrap>
+    </section>
   </app-page>
 </template>
 
 <script>
-import IndexFilter from "./index.filter";
-import IndexTable from "./index.table";
-
 /**
  * ユーザー一覧画面
  */
 export default {
   /**
-   * この画面で使用するコンポーネント
-   */
-  components: {
-    IndexFilter,
-    IndexTable
-  },
-  /**
-   * この画面で使用するデータ
+   * この画面で使用する変数
    */
   data() {
     return {
@@ -45,9 +97,42 @@ export default {
         // ユーザー一覧
         users: [],
         // 合計データ件数
-        totalRows: 0,
-      }
+        totalRows: 0
+      },
+      /**
+       * 選択したユーザーの一覧
+       */
+      selectedUsers: []
     };
+  },
+  /**
+   * 算出プロパティ
+   */
+  computed: {
+    /**
+     * 検索クエリ
+     */
+    searchQuery() {
+      return {
+        page: 1,
+        email: this.filter.email,
+        role_name: this.filter.role_name,
+        sort: this.$route.query.sort,
+        direction: this.$route.query.direction
+      };
+    },
+    /**
+     * 条件クリアクエリ
+     */
+    resetQuery() {
+      return { email: "test1" };
+    },
+    /**
+     * ページ番号
+     */
+    currentPage() {
+      return parseInt(this.$route.query.page) || 1;
+    }
   },
   /**
    * イベント
@@ -57,16 +142,56 @@ export default {
      * 一覧更新
      */
     async onUpdate() {
-      const response = await this.$store.dispatch('get', {
-        url: '/users',
-        query: this.$route.query,
+      const response = await this.$store.dispatch("get", {
+        url: "/users",
+        query: this.$route.query
       });
       if (response === null) {
         return;
       }
-      this.table.users = response.users
+      this.table.users = response.users;
       this.table.totalRows = response.totalRows;
     },
+    /**
+     * 検索ボタン押下
+     */
+    doSearch() {
+      this.$router.push({ query: this.searchQuery }).catch((e) => {
+        // Navigation Duplicated
+        this.$emit("onUpdate");
+      });
+    },
+    /**
+     * 条件クリアボタン押下
+     */
+    doClear() {
+      this.$router.push({ query: this.resetQuery }).catch(() => {
+        // Navigation Duplicated
+        this.$emit("onUpdate");
+      });
+    },
+    /**
+     * 新規追加ボタン押下
+     */
+    doAdd() {
+      this.$router.push("/users/add");
+    },
+    /**
+     * 編集ボタン押下
+     */
+    doEdit() {
+      if (this.selectedUsers.length !== 1) {
+        this.$store.commit("error", "1件選択してください。");
+        this.$bvModal.msgBoxOk(`1件選択してください。`, {
+          title: "エラー",
+          autoFocusButton: "ok",
+          noCloseOnBackdrop: true,
+          hideHeaderClose: false
+        });
+        return;
+      }
+      this.$router.push("/users/edit/" + this.selectedUsers[0].id);
+    }
   }
 };
 </script>

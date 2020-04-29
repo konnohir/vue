@@ -1,7 +1,7 @@
 <template>
   <div class="form-group">
-    <label :for="id" v-if="label">{{label}}</label>
-    <b-input :id="id" v-bind="$attrs" @input="input" />
+    <label :for="uniqueKey" v-if="label">{{label}}</label>
+    <b-input :id="uniqueKey" v-bind="$attrs" @input="input" />
   </div>
 </template>
 <script>
@@ -11,8 +11,12 @@ export default {
    * 引数
    */
   props: {
-    id: String,
     label: String,
+  },
+  computed: {
+    uniqueKey() {
+      return 'z' + this._uid
+    }
   },
   /**
    * イベント

@@ -21,7 +21,7 @@ export default {
     /**
      * 検索条件
      */
-    filter: {type:Object, default: null}
+    filter: Object
   },
   /**
    * 算出プロパティ
@@ -32,7 +32,7 @@ export default {
      */
     clearFilter() {
       const result = {};
-      Object.keys(this.filter).forEach(key => {
+      Object.keys(this.filter || {}).forEach(key => {
         const value = this.filter[key];
         switch (typeof value) {
           case "string":
@@ -108,15 +108,23 @@ export default {
      */
     acceptQuery() {
       // 検索ボタンが押下された(クエリパラメータにpageがある)場合
-      if (this.$route.query.page) {
-        // 検索欄のデフォルト値を破棄してクエリパラメータをセットする
-        this.$emit("input", { ...this.clearFilter, ...this.filterFromRoute });
-      } else {
-        // 検索欄のデフォルト値にクエリパラメータをマージする
-        this.$emit("input", { ...this.filter, ...this.filterFromRoute });
-      }
+      // if (this.$route.query.page) {
+      //   // 検索欄のデフォルト値を破棄してクエリパラメータをセットする
+      //   this.$emit("input", { ...this.clearFilter, ...this.filterFromRoute });
+      // } else {
+      //   // 検索欄のデフォルト値にクエリパラメータをマージする
+      //   this.$emit("input", { ...this.filter, ...this.filterFromRoute });
+      // }
+      this.$emit("input", { ...this.clearFilter, ...this.filterFromRoute });
       this.$emit("onUpdate");
     },
   }
 };
 </script>
+
+<style scoped>
+.md {
+  margin: 0 auto;
+  max-width: 600px;
+}
+</style>

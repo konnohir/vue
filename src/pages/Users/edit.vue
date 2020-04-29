@@ -1,14 +1,20 @@
 <template>
-  <app-page @onUpdate="onUpdate" :key="id">
+  <app-page @onUpdate="onUpdate" class="md">
+    <!-- ------------------------------------- -->
     <!-- タイトル -->
+    <!-- ------------------------------------- -->
     <h2 class="mb-2">
       ユーザーマスタ
       <template v-if="id">#{{id}}</template>
     </h2>
-    <router-link to="/users/add">Add</router-link>
-    <router-link to="/users/edit/1">Edit 1</router-link>
-    <router-link to="/users/edit/2">Edit 2</router-link>
-    <input v-model="user.email" />
+
+    <!-- ------------------------------------- -->
+    <!-- 編集フォーム領域 -->
+    <!-- ------------------------------------- -->
+    <form-section>
+      <my-input v-model="user.email" label="メールアドレス" />
+      <my-input v-model="user.role_id" label="権限" />
+    </form-section>
   </app-page>
 </template>
 

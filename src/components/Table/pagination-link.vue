@@ -1,6 +1,6 @@
 <template>
   <li class="page-item" :class="{'active': currentPage === page}">
-    <router-link class="page-link" :to="to"><slot>{{page}}</slot></router-link>
+    <router-link class="page-link" :to="to"><slot>{{page}}</slot>{{ {...this.query, page: this.page} }}</router-link>
   </li>
 </template>
 <script>
