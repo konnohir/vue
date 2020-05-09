@@ -1,9 +1,7 @@
 <template>
-  <div class="form-group">
-    <b-button v-bind="$attrs" :type="type" :disabled="isDisabled" @click="click">
-      <slot></slot>
-    </b-button>
-  </div>
+  <b-button v-bind="$attrs" :disabled="isDisabled" @click="onClick">
+    <slot></slot>
+  </b-button>
 </template>
 <script>
 export default {
@@ -12,24 +10,23 @@ export default {
    * 引数
    */
   props: {
-    disabled: Boolean,
-    type: {type: String, default: 'button'}
+    disabled: Boolean
   },
   /**
    * 算出プロパティ
    */
   computed: {
     /**
-     * ボタン無効化判定
-     */
-    isDisabled() {
-      return this.disabled || this.isExcute
-    },
-    /**
      * イベント実行中判定
      */
     isExcute() {
       return this.$store.getters.isExcute;
+    },
+    /**
+     * ボタン無効化判定
+     */
+    isDisabled() {
+      return this.disabled || this.isExcute;
     }
   },
   /**
@@ -39,7 +36,7 @@ export default {
     /**
      * ボタン押下
      */
-    click(value) {
+    onClick(value) {
       this.$emit("click", value);
     }
   }

@@ -10,6 +10,7 @@ import HomesIndex from '@/pages/Homes/index.vue'
 import HomesLogin from '@/pages/Homes/login.vue'
 import HomesLogout from '@/pages/Homes/logout.vue'
 import HomesProfile from '@/pages/Homes/profile.vue'
+import HomesPassword from '@/pages/Homes/password.vue'
 import UsersIndex from '@/pages/Users/index.vue'
 import UsersEdit from '@/pages/Users/edit.vue'
 
@@ -28,6 +29,7 @@ const vueRouter = new VueRouter({
     { path: '/login', component: HomesLogin },
     { path: '/logout', component: HomesLogout },
     { path: '/profile', component: HomesProfile },
+    { path: '/password', component: HomesPassword },
     { path: '/users', component: UsersIndex },
     { path: '/users/add', component: UsersEdit },
     { path: '/users/edit/:id', component: UsersEdit },
@@ -119,6 +121,7 @@ const identity = {
      * ログイン
      */
     async login(context, token) {
+      context.commit('setExcute', true)
       const identity = await new Promise(resolve =>
         setTimeout(
           () =>
@@ -132,6 +135,7 @@ const identity = {
       if (identity) {
         context.commit('setIdentity', identity)
       }
+      context.commit('setExcute', false)
       return identity;
     },
     /**
@@ -155,7 +159,7 @@ const api = {
      * GETメソッド
      */
     async get(context, data) {
-      console.log("%cGET " + data.url, "background:orange");
+      console.log("%cGET", "background:orange", data.url);
       if (data.url==='/users') {
         const users = [
           {
@@ -203,7 +207,7 @@ components.keys().forEach(key => {
   Vue.component(key.replace(/.*\/(.*?).vue/g, '$1'), components(key).default);
 });
 
-window.vm = new Vue({
+new Vue({
   router: vueRouter,
   store: vueStore,
   render: h => h(AppLayout)

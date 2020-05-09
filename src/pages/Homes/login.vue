@@ -1,8 +1,13 @@
 <template>
-  <section>
-    <form>
+  <app-page class="sm">
+    <form-section>
       <!-- メールアドレス -->
-      <my-input type="text" autocomplete="username" placeholder="メールアドレス" v-model="email" />
+      <my-input
+        type="text"
+        autocomplete="username"
+        placeholder="メールアドレス"
+        v-model="email"
+      />
       <!-- パスワード -->
       <my-input
         type="password"
@@ -11,9 +16,9 @@
         v-model="password"
       />
       <!-- ログイン -->
-      <my-button type="submit" variant="success" block @click.prevent="doLogin">Login</my-button>
-    </form>
-  </section>
+      <my-submit variant="success" block @click="doLogin">ログイン</my-submit>
+    </form-section>
+  </app-page>
 </template>
 
 <script>
@@ -49,7 +54,7 @@ export default {
   },
   /**
    * ページ遷移前フック
-   * @refs https://router.vuejs.org/ja/guide/advanced/navigation-guards.html#ルート単位ガード
+   * @refs https://router.vuejs.org/ja/guide/advanced/navigation-guards.html
    */
   beforeRouteLeave(to, from, next) {
     // 未ログイン時は他のページに遷移しない
@@ -71,17 +76,12 @@ export default {
       // ログイン要求
       const identity = await this.$store.dispatch("login", token);
       if (identity) {
-        // ログイン成功を親コンポーネントに通知 ($routeを変更する)
+        // ログイン成功を親コンポーネントに通知 (画面遷移する)
         this.$emit("onIdentityUpdated");
+      }else {
+        this.$store.commit('error', 'ログインに失敗しました。')
       }
     }
   }
 };
 </script>
-
-<style scoped>
-section {
-  max-width: 400px;
-  margin: 0 auto;
-}
-</style>

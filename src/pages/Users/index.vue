@@ -16,7 +16,7 @@
       <!-- 検索・条件クリアボタン -->
       <my-button-wrap>
         <my-button variant="outline-secondary" @click="doClear">条件クリア</my-button>
-        <my-button variant="outline-info" type="submit" @click.prevent="doSearch">検索</my-button>
+        <my-submit variant="outline-info" @click="doSearch">検索</my-submit>
       </my-button-wrap>
     </filter-section>
 
@@ -27,17 +27,17 @@
       <!-- アクションボタン -->
       <b-button-group class="mb-2">
         <!-- 新規作成ボタン -->
-        <b-button variant="outline-primary" @click="doAdd">新規作成</b-button>
+        <my-button variant="outline-primary" @click="doAdd">新規作成</my-button>
         <!-- 編集ボタン -->
-        <b-button variant="outline-primary" @click="doEdit">編集</b-button>
+        <my-button variant="outline-primary" @click="doEdit">編集</my-button>
         <!-- パスワード再発行ボタン -->
-        <b-button variant="outline-success">パスワード再発行</b-button>
+        <my-button variant="outline-success">パスワード再発行</my-button>
         <!-- アカウントロックボタン -->
-        <b-button variant="outline-success">アカウントロック</b-button>
+        <my-button variant="outline-success">アカウントロック</my-button>
         <!-- ロック解除ボタン -->
-        <b-button variant="outline-success">ロック解除</b-button>
+        <my-button variant="outline-success">ロック解除</my-button>
         <!-- 削除ボタン -->
-        <b-button variant="outline-danger">削除</b-button>
+        <my-button variant="outline-danger">削除</my-button>
       </b-button-group>
 
       <!-- ページネーション -->
@@ -125,7 +125,7 @@ export default {
      * 条件クリアクエリ
      */
     resetQuery() {
-      return { email: "test1" };
+      return {};
     },
     /**
      * ページ番号
@@ -156,7 +156,7 @@ export default {
      * 検索ボタン押下
      */
     doSearch() {
-      this.$router.push({ query: this.searchQuery }).catch((e) => {
+      this.$router.push({ query: this.searchQuery }).catch(e => {
         // Navigation Duplicated
         this.$emit("onUpdate");
       });
@@ -179,15 +179,37 @@ export default {
     /**
      * 編集ボタン押下
      */
-    doEdit() {
+    async doEdit() {
       if (this.selectedUsers.length !== 1) {
         this.$store.commit("error", "1件選択してください。");
-        this.$bvModal.msgBoxOk(`1件選択してください。`, {
+        await this.$bvModal.msgBoxOk(`1件選択してください。`, {
           title: "エラー",
           autoFocusButton: "ok",
           noCloseOnBackdrop: true,
-          hideHeaderClose: false
+          hideHeaderClose: false,
+          size: "sm",
+          headerBgVariant: "danger",
+          headerTextVariant: "light",
+          headerClass: "py-1",
+          footerClass: "py-1 ",
+          okVariant: "outline-secondary"
         });
+        this.$bvModal.msgBoxConfirm(
+          "選択した最初のデータを表示します。よろしいですか？",
+          {
+            title: "警告",
+            autoFocusButton: "ok",
+            noCloseOnBackdrop: true,
+            hideHeaderClose: false,
+            size: "md",
+            headerBgVariant: "warning",
+            headerTextVariant: "dark",
+            headerClass: "py-1",
+            footerClass: "py-1 ",
+            okVariant: "outline-primary",
+            cancelVariant: "outline-secondary"
+          }
+        );
         return;
       }
       this.$router.push("/users/edit/" + this.selectedUsers[0].id);

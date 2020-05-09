@@ -1,5 +1,5 @@
 <template>
-  <b-checkbox :value="value" :checked="checked" @input="input" />
+  <b-checkbox :value="value" :checked="checked" @input="onInput" />
 </template>
 <script>
 /**
@@ -20,7 +20,7 @@ export default {
     /**
      * チェックボックス選択
      */
-    input(event) {
+    onInput(event) {
       this.$emit('input', event);
     }
   }

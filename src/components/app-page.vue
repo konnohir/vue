@@ -115,7 +115,9 @@ export default {
       //   // 検索欄のデフォルト値にクエリパラメータをマージする
       //   this.$emit("input", { ...this.filter, ...this.filterFromRoute });
       // }
-      this.$emit("input", { ...this.clearFilter, ...this.filterFromRoute });
+      if (this.filter) {
+        this.$emit("input", { ...this.clearFilter, ...this.filterFromRoute });
+      }
       this.$emit("onUpdate");
     },
   }
@@ -123,6 +125,10 @@ export default {
 </script>
 
 <style scoped>
+.sm {
+  margin: 0 auto;
+  max-width: 380px;
+}
 .md {
   margin: 0 auto;
   max-width: 600px;

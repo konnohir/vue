@@ -3,7 +3,7 @@
 </template>
 <script>
 /**
- * 行選択チェックボックス
+ * 全選択チェックボックス
  */
 export default {
   /**
@@ -13,9 +13,12 @@ export default {
     selected: Array,
     all: Array
   },
+  /**
+   * 算出プロパティ
+   */
   computed: {
     checked() {
-      return this.all.length === this.selected.length;
+      return this.all.length !== 0 && this.all.length === this.selected.length;
     }
   },
   /**

@@ -12,8 +12,17 @@
     <!-- 編集フォーム領域 -->
     <!-- ------------------------------------- -->
     <form-section>
+      <!-- メールアドレス -->
       <my-input v-model="user.email" label="メールアドレス" />
+      <!-- 権限 -->
       <my-input v-model="user.role_id" label="権限" />
+      <!-- アクションボタン -->
+      <my-button-wrap class="justify-content-center mb-2">
+        <!-- キャンセルボタン -->
+        <my-button variant="outline-secondary" @click="doCancel">キャンセル</my-button>
+        <!-- 保存ボタン -->
+        <my-button variant="outline-success">保存</my-button>
+      </my-button-wrap>
     </form-section>
   </app-page>
 </template>
@@ -31,15 +40,14 @@ export default {
    */
   data() {
     return {
+      /**
+       * ユーザー
+       */
       user: {
-        /**
-         * メールアドレス
-         */
+        // メールアドレス
         email: "",
-        /**
-         * 権限ID
-         */
-        role_id: null
+        // 権限ID
+        role_id: null,
       }
     };
   },
@@ -71,7 +79,13 @@ export default {
       }
       this.user.email = response.user?.email;
       this.user.role_id = response.user?.role_id;
-    }
+    },
+    /**
+     * キャンセルボタン押下
+     */
+    doCancel() {
+      this.$router.push("/users");
+    },
   }
 };
 </script>

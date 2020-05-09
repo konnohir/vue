@@ -1,5 +1,5 @@
 <template>
-  <div class="form-inline wrap">
+  <div class="d-flex button-wrap">
     <slot></slot>
   </div>
 </template>
@@ -8,10 +8,10 @@ export default {};
 </script>
 
 <style scoped>
-.wrap {
+.button-wrap {
   letter-spacing:-1em;
 }
-.wrap > * {
+.button-wrap > * {
   letter-spacing:normal;
   margin-left: 2px;
   margin-right: 2px;

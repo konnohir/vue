@@ -1,11 +1,11 @@
 <template>
   <li class="page-item" :class="{'active': currentPage === page}">
-    <router-link class="page-link" :to="to"><slot>{{page}}</slot>{{ {...this.query, page: this.page} }}</router-link>
+    <router-link class="page-link" :to="to"><slot>{{page}}</slot></router-link>
   </li>
 </template>
 <script>
 /**
- * 行選択チェックボックス
+ * ページ番号リンク
  */
 export default {
   /**
@@ -15,6 +15,9 @@ export default {
     page: Number,
     currentPage: Number,
   },
+  /**
+   * 算出プロパティ
+   */
   computed: {
     /**
      * 現在の検索条件

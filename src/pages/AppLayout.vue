@@ -53,28 +53,32 @@ export default {
       return this.$store.getters.isLoggedIn;
     },
     /**
+     * 現在表示している画面のURL
+     */
+    currentPage() {
+      return this.$route.matched[0].path;
+    },
+    /**
      * ログイン画面のURL
      */
     loginPage() {
-      // 現在のページのURLを取得
-      const redirectTo = this.$route.matched[0].path;
-      if (redirectTo === "" || redirectTo === "/logout" || redirectTo === "*") {
-        // トップページ、ログアウトページ、または存在しないページなら「?redirect=」を付与しない
-        return "/login";
+      if (this.currentPage.length > 1 && this.currentPage !== "/logout") {
+        // URLに「?redirect=」を付与する（トップページ、ログアウトページ、存在しないページ[*]をのぞく）
+        return "/login?redirect=" + this.currentPage
       }
-      return "/login?redirect=" + redirectTo;
+      return "/login";
     },
     /**
-     * ログイン後遷移先画面のURL
+     * ホーム画面のURL
      */
-    redirectPage() {
+    homePage() {
       // URLの「?redirect=」 に続く文字列を取得
-      const redirectTo = this.$route.query.redirect || "/";
-      if (redirectTo === "login" || redirectTo === "/login") {
-        // ログイン画面のURLが指定されている場合、トップページのURLに置き換える
-        return "/";
+      const redirectPage = this.$router.resolve(this.$route.query.redirect || '/').route.matched[0].path;
+      if (redirectPage.length > 1 && redirectPage !== "/login") {
+        // 遷移先をリダイレクト先のURLにする（ログインページ、存在しないページ[*]をのぞく）
+        return redirectPage;
       }
-      return redirectTo;
+      return "/";
     }
   },
   /**
@@ -92,13 +96,13 @@ export default {
      */
     onIdentityUpdated() {
       // 未ログインならログイン画面へ遷移する
-      if (!this.isLoggedIn && this.$route.matched[0].path !== "/login") {
+      if (!this.isLoggedIn && this.currentPage !== "/login") {
         this.$router.push(this.loginPage);
       }
 
-      // ログイン済みならトップ画面(?redirect=があれば該当ページ)へ遷移する
-      if (this.isLoggedIn && this.$route.matched[0].path === "/login") {
-        this.$router.push(this.redirectPage);
+      // ログイン済みならホーム画面(?redirect=があれば該当ページ)へ遷移する
+      if (this.isLoggedIn && this.currentPage === "/login") {
+        this.$router.push(this.homePage);
       }
     }
   }

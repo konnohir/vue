@@ -1,5 +1,5 @@
 <template>
-  <section></section>
+  <app-page></app-page>
 </template>
 
 <script>
