@@ -1,16 +1,16 @@
 <template>
   <app-page @onUpdate="onUpdate" class="md">
-    <!-- ------------------------------------- -->
-    <!-- タイトル -->
-    <!-- ------------------------------------- -->
+    <!-- ==================================== -->
+    <!-- 画面タイトル -->
+    <!-- ==================================== -->
     <h2 class="mb-2">
       ユーザーマスタ
       <template v-if="id">#{{id}}</template>
     </h2>
 
-    <!-- ------------------------------------- -->
+    <!-- ==================================== -->
     <!-- 編集フォーム領域 -->
-    <!-- ------------------------------------- -->
+    <!-- ==================================== -->
     <form-section>
       <!-- メールアドレス -->
       <my-input v-model="user.email" label="メールアドレス" />
@@ -21,7 +21,7 @@
         <!-- キャンセルボタン -->
         <my-button variant="outline-secondary" @click="doCancel">キャンセル</my-button>
         <!-- 保存ボタン -->
-        <my-button variant="outline-success">保存</my-button>
+        <my-button variant="outline-success" @click="doSave">保存</my-button>
       </my-button-wrap>
     </form-section>
   </app-page>
@@ -57,6 +57,13 @@ export default {
   computed: {
     id() {
       return this.$route.params.id || null;
+    },
+    apiEndpoint() {
+      if (this.id === null) {
+        return "/users/add";
+      }else {
+        return "/users/edit/" + this.id;
+      }
     }
   },
   /**
@@ -64,21 +71,18 @@ export default {
    */
   methods: {
     /**
-     * 一覧更新
+     * 画面初期表示・URLパラメータ変更
      */
     async onUpdate() {
-      if (this.id === null) {
-        return;
-      }
       const response = await this.$store.dispatch("get", {
-        url: "/users/edit/" + this.id,
+        url: this.apiEndpoint,
         query: this.$route.query
       });
       if (response === null) {
         return;
       }
-      this.user.email = response.user?.email;
-      this.user.role_id = response.user?.role_id;
+      this.user.email = response.user.email;
+      this.user.role_id = response.user.role_id;
     },
     /**
      * キャンセルボタン押下
@@ -86,6 +90,12 @@ export default {
     doCancel() {
       this.$router.push("/users");
     },
+    /**
+     * 保存ボタン押下
+     */
+    doSave() {
+
+    }
   }
 };
 </script>

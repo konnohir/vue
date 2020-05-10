@@ -1,13 +1,13 @@
 <template>
   <app-page v-model="filter" @onUpdate="onUpdate">
-    <!-- ------------------------------------- -->
-    <!-- タイトル -->
-    <!-- ------------------------------------- -->
+    <!-- ==================================== -->
+    <!-- 画面タイトル -->
+    <!-- ==================================== -->
     <h2 class="mb-2">ユーザーマスタ</h2>
 
-    <!-- ------------------------------------- -->
+    <!-- ==================================== -->
     <!-- 検索条件領域 -->
-    <!-- ------------------------------------- -->
+    <!-- ==================================== -->
     <filter-section>
       <!-- メールアドレス -->
       <my-input v-model="filter.email" label="メールアドレス" />
@@ -20,9 +20,9 @@
       </my-button-wrap>
     </filter-section>
 
-    <!-- ------------------------------------- -->
+    <!-- ==================================== -->
     <!-- 一覧表示領域 -->
-    <!-- ------------------------------------- -->
+    <!-- ==================================== -->
     <section>
       <!-- アクションボタン -->
       <b-button-group class="mb-2">
@@ -139,7 +139,7 @@ export default {
    */
   methods: {
     /**
-     * 一覧更新
+     * 画面初期表示・URLパラメータ変更
      */
     async onUpdate() {
       const response = await this.$store.dispatch("get", {
@@ -158,7 +158,7 @@ export default {
     doSearch() {
       this.$router.push({ query: this.searchQuery }).catch(e => {
         // Navigation Duplicated
-        this.$emit("onUpdate");
+        this.onUpdate();
       });
     },
     /**
@@ -167,7 +167,7 @@ export default {
     doClear() {
       this.$router.push({ query: this.resetQuery }).catch(() => {
         // Navigation Duplicated
-        this.$emit("onUpdate");
+        this.onUpdate();
       });
     },
     /**

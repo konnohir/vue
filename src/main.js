@@ -187,10 +187,16 @@ const api = {
           totalRows,
         }
       }else {
-        return {
-          user: {
-            email: data.url,
-            role_id: 1,
+        if (data.url.match(/add/)) {
+          return {
+            user: {}
+          }
+        }else {
+          return {
+            user: {
+              email: data.url,
+              role_id: 1,
+            }
           }
         }
       }
